@@ -1,0 +1,24 @@
+# Nuxt build and dev outputs
+.nuxt/
+.output/
+
+# Node modules
+node_modules/
+
+# Package manager files
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Generated metadata (since it is re-generated at build time)
+public/data/projects-metadata.json

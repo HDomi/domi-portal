@@ -1,0 +1,21 @@
+{
+  "name": "domi-portal",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "fetch-metadata": "node scripts/fetch-metadata.js",
+    "build": "node scripts/fetch-metadata.js && nuxt build",
+    "dev": "node scripts/fetch-metadata.js && nuxt dev",
+    "generate": "node scripts/fetch-metadata.js && nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nuxt": "^4.4.8",
+    "vue": "^3.5.35",
+    "vue-router": "^5.1.0"
+  },
+  "devDependencies": {
+    "node-html-parser": "^7.1.0"
+  }
+}
