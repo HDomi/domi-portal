@@ -6,8 +6,8 @@ export default defineNuxtConfig({
   // Enable SSR for pre-rendering static pages (SSG)
   ssr: true,
 
-  // Global CSS import
-  css: ["~/assets/css/main.css"],
+  // Global CSS/SCSS import
+  css: ["~/assets/scss/main.scss"],
 
   // App configurations including SEO details
   app: {
