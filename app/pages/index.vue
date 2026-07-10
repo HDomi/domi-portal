@@ -19,11 +19,7 @@
           <h1>Domi Portal</h1>
         </div>
         <div class="header-links">
-          <a
-            href="https://github.com/hdomi"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://github.com/hdomi" target="_blank" rel="noopener noreferrer">
             <svg
               width="20"
               height="20"
@@ -42,8 +38,54 @@
           </a>
         </div>
       </div>
-      <p>제가 직접 개발하고 배포한 다양한 웹 프로젝트입니다.</p>
+      <p>제가 개발하고 배포한 다양한 웹 프로젝트와 최신 기술 블로그 글을 모아보는 포탈입니다.</p>
     </section>
+
+    <!-- Navigation Tabs System -->
+    <div class="tabs-wrapper-main">
+      <div class="tabs-container">
+        <button
+          class="tab-trigger"
+          :class="{ active: currentTab === 'projects' }"
+          @click="currentTab = 'projects'"
+        >
+          <svg
+            class="tab-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"
+            />
+          </svg>
+          <span>프로젝트 (Projects)</span>
+        </button>
+        <button
+          class="tab-trigger"
+          :class="{ active: currentTab === 'blog' }"
+          @click="currentTab = 'blog'"
+        >
+          <svg
+            class="tab-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
+            />
+          </svg>
+          <span>기술 블로그 (Blog)</span>
+        </button>
+      </div>
+    </div>
 
     <!-- Controls (Search & Tags) -->
     <div class="controls">
@@ -65,18 +107,14 @@
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="프로젝트 제목, 설명 또는 태그 검색..."
+          :placeholder="searchPlaceholder"
           class="search-input"
         />
       </div>
 
       <!-- Tag Filter pills -->
       <div v-if="allTags.length" class="tags-wrapper">
-        <button
-          class="tag-btn"
-          :class="{ active: selectedTag === null }"
-          @click="selectTag(null)"
-        >
+        <button class="tag-btn" :class="{ active: selectedTag === null }" @click="selectTag(null)">
           전체 보기
         </button>
         <button
@@ -91,20 +129,28 @@
       </div>
     </div>
 
-    <!-- Project List Grid -->
+    <!-- Main List Grids -->
     <main>
-      <div v-if="filteredProjects.length" class="project-grid">
-        <ProjectCard
-          v-for="project in filteredProjects"
-          :key="project.url"
-          :project="project"
-        />
+      <!-- Projects Tab Grid -->
+      <div v-show="currentTab === 'projects'">
+        <div v-if="filteredProjects.length" class="project-grid">
+          <ProjectCard v-for="project in filteredProjects" :key="project.url" :project="project" />
+        </div>
+        <div v-else class="empty-state tags-wrapper">
+          <p>검색 결과와 일치하는 프로젝트가 없습니다.</p>
+          <button class="tag-btn active" @click="resetFilters">초기화</button>
+        </div>
       </div>
 
-      <!-- Empty state if search has no results -->
-      <div v-else class="empty-state tags-wrapper">
-        <p>검색 결과와 일치하는 프로젝트가 없습니다.</p>
-        <button class="tag-btn active" @click="resetFilters">초기화</button>
+      <!-- Blog Tab Grid -->
+      <div v-show="currentTab === 'blog'">
+        <div v-if="filteredPosts.length" class="project-grid">
+          <BlogPostCard v-for="post in filteredPosts" :key="post.uuid" :post="post" />
+        </div>
+        <div v-else class="empty-state tags-wrapper">
+          <p>검색 결과와 일치하는 블로그 게시글이 없습니다.</p>
+          <button class="tag-btn active" @click="resetFilters">초기화</button>
+        </div>
       </div>
     </main>
 
@@ -112,40 +158,84 @@
     <footer>
       <p>
         © {{ new Date().getFullYear() }}
-        <a
-          href="https://github.com/hdomi"
-          target="_blank"
-          rel="noopener noreferrer"
-          >hdomi</a
-        >. All rights reserved.
+        <a href="https://github.com/hdomi" target="_blank" rel="noopener noreferrer">hdomi</a>. All
+        rights reserved.
       </p>
     </footer>
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script setup lang="ts">
+import { ref, computed, watch } from "vue";
 import projectsData from "../../public/data/projects-metadata.json";
+import postsData from "../../public/data/posts-index.json";
 
-// Wrap raw data
-const projects = computed(() => projectsData || []);
+// Type definitions
+interface Project {
+  url: string;
+  title: string;
+  description: string;
+  image: string;
+  siteName: string;
+  tags: string[];
+  scrapedAt: string;
+  success: boolean;
+  error?: string;
+}
+
+interface Post {
+  uuid: string;
+  title: string;
+  summary: string;
+  createdAt: string;
+  tags: string[];
+}
+
+// Active Tab state
+const currentTab = ref<"projects" | "blog">("projects");
 
 // Search & filter states
 const searchQuery = ref("");
-const selectedTag = ref(null);
+const selectedTag = ref<string | null>(null);
 
-// Get unique tags list across all projects
-const allTags = computed(() => {
-  const tagsSet = new Set();
-  projects.value.forEach((p) => {
-    if (p.tags && Array.isArray(p.tags)) {
-      p.tags.forEach((t) => tagsSet.add(t));
-    }
-  });
+// Reset tag filters when switching tabs
+watch(currentTab, () => {
+  selectedTag.value = null;
+});
+
+// Dynamic search placeholder based on active tab
+const searchPlaceholder = computed(() => {
+  return currentTab.value === "projects"
+    ? "프로젝트 제목, 설명 또는 태그 검색..."
+    : "블로그 글 제목, 요약 또는 태그 검색...";
+});
+
+// Wrap data safely
+const projects = computed<Project[]>(() => (projectsData as Project[]) || []);
+const posts = computed<Post[]>(() => (postsData as Post[]) || []);
+
+// Extract unique tags based on active tab
+const allTags = computed<string[]>(() => {
+  const tagsSet = new Set<string>();
+
+  if (currentTab.value === "projects") {
+    projects.value.forEach((p) => {
+      if (p.tags && Array.isArray(p.tags)) {
+        p.tags.forEach((t) => tagsSet.add(t));
+      }
+    });
+  } else {
+    posts.value.forEach((p) => {
+      if (p.tags && Array.isArray(p.tags)) {
+        p.tags.forEach((t) => tagsSet.add(t));
+      }
+    });
+  }
+
   return Array.from(tagsSet).sort();
 });
 
-// Filter logic
+// Filter logic for projects
 const filteredProjects = computed(() => {
   return projects.value.filter((p) => {
     // 1. Tag filtering
@@ -158,9 +248,7 @@ const filteredProjects = computed(() => {
       const query = searchQuery.value.toLowerCase().trim();
       const matchTitle = p.title?.toLowerCase().includes(query);
       const matchDesc = p.description?.toLowerCase().includes(query);
-      const matchTags = p.tags?.some((tag) =>
-        tag.toLowerCase().includes(query),
-      );
+      const matchTags = p.tags?.some((tag) => tag.toLowerCase().includes(query));
       const matchUrl = p.url?.toLowerCase().includes(query);
 
       return matchTitle || matchDesc || matchTags || matchUrl;
@@ -170,8 +258,30 @@ const filteredProjects = computed(() => {
   });
 });
 
+// Filter logic for blog posts
+const filteredPosts = computed(() => {
+  return posts.value.filter((p) => {
+    // 1. Tag filtering
+    if (selectedTag.value && (!p.tags || !p.tags.includes(selectedTag.value))) {
+      return false;
+    }
+
+    // 2. Search query filtering
+    if (searchQuery.value.trim()) {
+      const query = searchQuery.value.toLowerCase().trim();
+      const matchTitle = p.title?.toLowerCase().includes(query);
+      const matchSummary = p.summary?.toLowerCase().includes(query);
+      const matchTags = p.tags?.some((tag) => tag.toLowerCase().includes(query));
+
+      return matchTitle || matchSummary || matchTags;
+    }
+
+    return true;
+  });
+});
+
 // Select tag action
-const selectTag = (tag) => {
+const selectTag = (tag: string | null) => {
   selectedTag.value = tag;
 };
 
