@@ -26,55 +26,38 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
           ssh-keyscan -T 5 -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts || true
 
-      - name: Check SSH key
+      # 📦 1. 현재 가상 머신의 소스코드를 미니 PC 서버 디렉토리로 안전하게 전송 (rsync)
+      - name: Sync Source Code to Server
         run: |
-          ls -l ~/.ssh
-          head -n 3 ~/.ssh/id_rsa
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
+            ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ env.APP_DIR }}
 
-      - name: Test SSH
-        run: |
-          ssh -i ~/.ssh/id_rsa \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=no \
-            -p ${{ secrets.SERVER_PORT }} \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} \
-            "whoami; hostname"
-
-      # 🚀 서버 배포
+      # 🚀 2. 미니 PC 원격 접속 후 Docker 빌드 및 런타임 배포 실행
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes -o StrictHostKeyChecking=no \
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             -p ${{ secrets.SERVER_PORT }} \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} <<EOF
 
           set -e
-
-          # 배포 디렉토리 생성 및 권한 설정
-          sudo mkdir -p "$APP_DIR"
-          sudo chown deploy:deploy "$APP_DIR"
           cd "$APP_DIR"
 
-          if [ ! -d ".git" ]; then
-            git clone https://github.com/HDomi/hdomi.github.io.git .
-          else
-            git pull origin main
-          fi
-
-          # 기존 컨테이너 중지 및 삭제
+          # 기존 컨테이너 안전하게 중지 및 찌꺼기 삭제
           sudo docker stop "$APP_NAME" || true
           sudo docker rm "$APP_NAME" || true
 
-          # Docker 이미지 빌드
+          # 완벽한 런타임 Nuxt SSR 소스코드로 Docker 이미지 빌드
           sudo docker build -t "$APP_NAME:latest" .
 
-          # Docker 컨테이너 실행 (1131 포트 매핑 및 런타임 Secrets 주입)
+          # Docker 컨테이너 실행 (CORS 허용용 ALLOWED_ORIGIN 주입)
           sudo docker run -d \
             --restart unless-stopped \
             --name "$APP_NAME" \
             -p "$APP_PORT:$APP_PORT" \
+            -e ALLOWED_ORIGIN="https://hdomi.github.io" \
             -e FIREBASE_SERVICE_ACCOUNT_JSON='${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}' \
             -e FIREBASE_DATABASE_URL='${{ secrets.FIREBASE_DATABASE_URL }}' \
             "$APP_NAME:latest"
