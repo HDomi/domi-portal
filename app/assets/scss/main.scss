@@ -13,20 +13,20 @@ $font-sans:
   sans-serif;
 $font-display: "Space Grotesk", $font-sans;
 
-$bg-color: #030712;
-$bg-grid: rgba(99, 102, 241, 0.04);
+$bg-color: #0f1011; // 딥 차콜 벽체 배경
+$bg-grid: rgba(140, 98, 57, 0.025); // 앰버 톤 격자 그리드
 
-$card-bg: rgba(17, 24, 39, 0.45);
-$card-border: rgba(255, 255, 255, 0.06);
-$card-border-hover: rgba(99, 102, 241, 0.4);
+$card-bg: rgba(21, 22, 25, 0.7); // 다크 가구 표면 색상
+$card-border: rgba(255, 255, 255, 0.05);
+$card-border-hover: rgba(176, 126, 80, 0.45); // 월넛 호버 경계선
 
-$text-primary: #f9fafb;
-$text-secondary: #9ca3af;
-$text-muted: #6b7280;
+$text-primary: #f9fafb; // 화이트
+$text-secondary: #d1d5db; // 샌드 그레이
+$text-muted: #8a8e98; // 차분한 그레이
 
-$color-primary: #6366f1; // 인디고
-$color-secondary: #a855f7; // 보라색
-$color-accent: #14b8a6; // 청록색
+$color-primary: #8c6239; // 월넛 대표 브라운
+$color-secondary: #b07e50; // 월넛 라이트
+$color-accent: #e0a96d; // 간접 조명 골드/앰버 빛
 
 /* 기본 리셋 스타일 */
 *,
@@ -70,7 +70,7 @@ body::before {
   left: -10%;
   width: 50vw;
   height: 50vw;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(224, 169, 109, 0.12) 0%, transparent 70%);
   z-index: -1;
   pointer-events: none;
   filter: blur(80px);
@@ -82,10 +82,22 @@ body::before {
   right: -10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(140, 98, 57, 0.08) 0%, transparent 70%);
   z-index: -1;
   pointer-events: none;
   filter: blur(100px);
+}
+
+/* 수직 우드 루버(Wood Louver) 패턴 배경 */
+.wood-louver-pattern {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(15, 16, 17, 0.95),
+    rgba(15, 16, 17, 0.95) 12px,
+    rgba(140, 98, 57, 0.15) 12px,
+    rgba(140, 98, 57, 0.15) 15px
+  );
+  border-right: 2px solid #4a3018;
 }
 
 /* 타이포그래피 스타일 */
@@ -168,328 +180,6 @@ h6 {
   }
 }
 
-/* 인트로/히어로 섹션 */
-.hero {
-  margin-bottom: 3.5rem;
-  text-align: center;
-
-  h1 {
-    font-size: 3rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, #ffffff 30%, #a855f7 70%, #6366f1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    @media (max-width: 768px) {
-      font-size: 2.25rem;
-    }
-  }
-
-  p {
-    font-size: 1.125rem;
-    color: $text-secondary;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-}
-.tag-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: $text-secondary;
-  padding: 0.4rem 0.85rem;
-  border-radius: 2rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: $text-primary;
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-
-  &.active {
-    background: linear-gradient(135deg, $color-primary, $color-secondary);
-    color: #ffffff;
-    border-color: transparent;
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
-  }
-}
-/* 검색 및 필터 */
-.controls {
-  margin-bottom: 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-
-  .search-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-
-    .search-input {
-      width: 100%;
-      padding: 1rem 1rem 1rem 3rem;
-      background: $card-bg;
-      border: 1px solid $card-border;
-      border-radius: 1rem;
-      color: $text-primary;
-      font-size: 1rem;
-      font-family: $font-sans;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:focus {
-        outline: none;
-        border-color: $color-primary;
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
-      }
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 1.125rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1.25rem;
-      height: 1.25rem;
-      color: $text-muted;
-      pointer-events: none;
-    }
-  }
-
-  .tags-wrapper {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    .tag-btn {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      color: $text-secondary;
-      padding: 0.4rem 0.85rem;
-      border-radius: 2rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: $text-primary;
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
-      &.active {
-        background: linear-gradient(135deg, $color-primary, $color-secondary);
-        color: #ffffff;
-        border-color: transparent;
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
-      }
-    }
-  }
-}
-
-/* 프로젝트 그리드 및 카드 */
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2rem;
-  width: 100%;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.project-card {
-  position: relative;
-  background: $card-bg;
-  border: 1px solid $card-border;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(12px);
-  transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  height: 100%;
-
-  &:hover {
-    transform: translateY(-6px);
-    border-color: $card-border-hover;
-    box-shadow:
-      0 10px 30px rgba(99, 102, 241, 0.1),
-      0 0 1px 1px rgba(168, 85, 247, 0.2);
-
-    .card-image {
-      transform: scale(1.05);
-    }
-  }
-
-  .card-image-container {
-    width: 100%;
-    height: 180px;
-    position: relative;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-
-    .card-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .card-image-fallback {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(
-        135deg,
-        rgba(99, 102, 241, 0.15) 0%,
-        rgba(168, 85, 247, 0.1) 100%
-      );
-      color: $text-muted;
-      gap: 0.5rem;
-
-      .fallback-icon {
-        width: 2.5rem;
-        height: 2.5rem;
-        opacity: 0.7;
-      }
-    }
-
-    .card-badge {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      background: rgba(3, 7, 18, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(4px);
-      color: $text-secondary;
-      padding: 0.25rem 0.6rem;
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-  }
-
-  .card-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-
-    .card-title {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-      color: $text-primary;
-      line-height: 1.4;
-      font-weight: 700;
-    }
-
-    .card-desc {
-      font-size: 0.925rem;
-      color: $text-secondary;
-      margin-bottom: 1.25rem;
-      line-height: 1.6;
-      flex-grow: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-bottom: 1.5rem;
-
-      .card-tag {
-        background: rgba(99, 102, 241, 0.06);
-        border: 1px solid rgba(99, 102, 241, 0.12);
-        color: #a5b4fc;
-        padding: 0.2rem 0.5rem;
-        border-radius: 0.35rem;
-        font-size: 0.75rem;
-        font-weight: 500;
-      }
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      padding-top: 1rem;
-
-      .last-updated {
-        font-size: 0.75rem;
-        color: $text-muted;
-      }
-
-      .launch-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.35rem;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
-        border: 1px solid rgba(168, 85, 247, 0.25);
-        color: #e9d5ff;
-        padding: 0.4rem 0.85rem;
-        border-radius: 0.5rem;
-        font-size: 0.825rem;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.25s ease;
-
-        &:hover {
-          background: linear-gradient(135deg, $color-primary, $color-secondary);
-          border-color: transparent;
-          color: #ffffff;
-          box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-        }
-
-        svg {
-          width: 0.875rem;
-          height: 0.875rem;
-          stroke: currentColor;
-          stroke-width: 2.5;
-          fill: none;
-        }
-      }
-    }
-  }
-}
-
-/* 비어있는 상태 스타일 */
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: $card-bg;
-  border: 1px dashed $card-border;
-  border-radius: 1.25rem;
-  max-width: 500px;
-  margin: 3rem auto;
-
-  p {
-    color: $text-secondary;
-    margin-bottom: 1.5rem;
-  }
-}
-
 /* 푸터 섹션 */
 footer {
   margin-top: auto;
@@ -507,97 +197,6 @@ footer {
 
     &:hover {
       color: $color-primary;
-    }
-  }
-}
-
-/* 탭 네비게이션 시스템 */
-.tabs-wrapper-main {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2.5rem;
-}
-
-.tabs-container {
-  display: flex;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid $card-border;
-  border-radius: 1rem;
-  padding: 0.35rem;
-  gap: 0.5rem;
-  backdrop-filter: blur(10px);
-}
-
-.tab-trigger {
-  background: transparent;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  color: $text-secondary;
-  font-family: $font-sans;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    color: $text-primary;
-    background: rgba(255, 255, 255, 0.03);
-  }
-
-  &.active {
-    background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
-    color: #ffffff;
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-  }
-
-  .tab-icon {
-    width: 1.15rem;
-    height: 1.15rem;
-    stroke: currentColor;
-  }
-}
-
-/* 블로그 카드 스타일 커스텀 */
-.blog-post-card {
-  .blog-card-header {
-    background: linear-gradient(
-      135deg,
-      rgba(168, 85, 247, 0.12) 0%,
-      rgba(99, 102, 241, 0.08) 100%
-    ) !important;
-
-    .blog-icon {
-      color: #a855f7;
-      filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.3));
-    }
-  }
-
-  .blog-badge {
-    border-color: rgba(168, 85, 247, 0.3) !important;
-    color: #e9d5ff !important;
-  }
-
-  .blog-date-overlay {
-    position: absolute;
-    bottom: 0.75rem;
-    left: 0.75rem;
-    font-size: 0.75rem;
-    color: $text-muted;
-    font-weight: 500;
-  }
-
-  .blog-btn {
-    border-color: rgba(99, 102, 241, 0.25) !important;
-    color: #c7d2fe !important;
-
-    &:hover {
-      background: linear-gradient(135deg, $color-primary, $color-secondary) !important;
-      border-color: transparent !important;
-      color: #ffffff !important;
     }
   }
 }
@@ -730,9 +329,9 @@ footer {
       gap: 0.5rem;
 
       .article-tag {
-        background: rgba(168, 85, 247, 0.06);
-        border: 1px solid rgba(168, 85, 247, 0.15);
-        color: #d8b4fe;
+        background: rgba(140, 98, 57, 0.06);
+        border: 1px solid rgba(140, 98, 57, 0.15);
+        color: #dcc39f;
         padding: 0.25rem 0.65rem;
         border-radius: 0.5rem;
         font-size: 0.785rem;
@@ -740,9 +339,9 @@ footer {
         transition: all 0.2s ease;
 
         &:hover {
-          background: rgba(168, 85, 247, 0.12);
-          border-color: rgba(168, 85, 247, 0.3);
-          color: #f3e8ff;
+          background: rgba(140, 98, 57, 0.12);
+          border-color: rgba(224, 169, 109, 0.35);
+          color: #f9fafb;
         }
       }
     }

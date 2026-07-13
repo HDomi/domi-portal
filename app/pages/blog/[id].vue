@@ -26,7 +26,6 @@
             <rect x="3" y="16" width="7" height="5" rx="1.5" />
           </svg>
         </div>
-        <span class="brand-text">Domi Portal</span>
       </div>
     </header>
 
