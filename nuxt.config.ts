@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   // 글로벌 CSS/SCSS 가져오기
+  buildId: process.env.NODE_ENV === "production" ? String(Date.now()) : undefined,
   css: ["~/assets/scss/main.scss"],
   buildAssetsDir: "/_nuxt/",
   cdnURL: process.env.NODE_ENV === "production" ? "https://portal.h-domi.cloud/" : "/",
