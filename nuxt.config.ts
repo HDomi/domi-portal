@@ -19,12 +19,13 @@ export default defineNuxtConfig({
   buildAssetsDir: "/_nuxt/",
   cdnURL: process.env.NODE_ENV === "production" ? "https://portal.h-domi.cloud/" : "/",
   routeRules: {
-    // _nuxt 폴더 하위의 모든 정적 파일(CSS, JS)에 대해 CORS 허용 헤더 주입
     "/_nuxt/**": {
       headers: {
         "Access-Control-Allow-Origin": "https://hdomi.github.io",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+        "Access-Control-Allow-Headers":
+          "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+        "Access-Control-Allow-Credentials": "true",
       },
     },
   },
