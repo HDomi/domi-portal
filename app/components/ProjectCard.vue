@@ -112,7 +112,11 @@ const formattedDate = computed(() => {
   color: inherit;
   display: block;
   flex-shrink: 0;
-  width: 320px;
+  width: 290px;
+
+  @media (min-width: 640px) {
+    width: 320px;
+  }
 }
 
 .project-card {

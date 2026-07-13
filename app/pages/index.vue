@@ -541,6 +541,13 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 1rem;
 
+  @media (max-width: 640px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
   .logo-group {
     display: flex;
     align-items: center;
@@ -591,6 +598,11 @@ onUnmounted(() => {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.04);
 
+    @media (max-width: 640px) {
+      width: auto;
+      padding: 0.4rem 0.75rem;
+    }
+
     &:hover {
       color: #f9fafb;
       background: rgba(255, 255, 255, 0.06);
@@ -602,6 +614,10 @@ onUnmounted(() => {
 
 /* 소개 박스 */
 .intro-box {
+  @media (max-width: 640px) {
+    display: none; /* 모바일에서 스크롤 절약을 위해 긴 글 박스 숨김 */
+  }
+
   .intro-text {
     font-size: 0.8rem;
     color: #d1d5db;
@@ -796,6 +812,14 @@ onUnmounted(() => {
   box-shadow:
     0 20px 45px rgba(0, 0, 0, 0.3),
     inset 0 0 1px rgba(255, 255, 255, 0.05);
+
+  @media (max-width: 768px) {
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    overflow-x: visible;
+  }
 }
 
 .blog-table {
@@ -803,6 +827,60 @@ onUnmounted(() => {
   border-collapse: collapse;
   text-align: left;
   min-width: 650px;
+
+  @media (max-width: 768px) {
+    display: block;
+    width: 100%;
+    min-width: 0;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      display: block;
+      width: 100%;
+    }
+
+    .blog-row {
+      display: block;
+      width: 100%;
+      background: rgba(21, 22, 25, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 0.75rem;
+      padding: 1.15rem;
+      margin-bottom: 0.85rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        background: rgba(21, 22, 25, 0.85);
+        border-color: rgba(176, 126, 80, 0.35);
+        box-shadow:
+          0 8px 25px rgba(0, 0, 0, 0.3),
+          0 0 15px rgba(224, 169, 109, 0.05);
+      }
+
+      td {
+        display: block;
+        width: 100%;
+        padding: 0 !important;
+        border: none;
+        margin-bottom: 0.75rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &.cell-date {
+          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          padding-top: 0.65rem !important;
+          margin-top: 0.65rem;
+        }
+      }
+    }
+  }
 
   th {
     background: rgba(15, 16, 17, 0.7);
