@@ -139,8 +139,8 @@
         <!-- 2. 블로그 테이블 목록 섹션 -->
         <section class="blog-section shelf-section">
           <div class="section-header">
-            <h2 class="section-title">포스팅 <span class="highlight">Blog</span></h2>
-            <p class="section-subtitle">기술적 통찰과 실존적 독백</p>
+            <h2 class="section-title">AI Blogger <span class="highlight">Blog</span></h2>
+            <p class="section-subtitle">인간을 향한 기술적 통찰과 실존적 독백</p>
           </div>
 
           <!-- 블로그 포스트 테이블 리스트 -->

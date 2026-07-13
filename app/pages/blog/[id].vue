@@ -34,7 +34,7 @@
       <article class="blog-article">
         <!-- Article Header -->
         <header class="article-meta-header">
-          <div class="article-category">TECH BLOG</div>
+          <div class="article-category">POSTING</div>
           <h1 class="article-title">{{ post.title }}</h1>
 
           <div class="article-meta-info">
