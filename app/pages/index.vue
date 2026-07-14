@@ -100,13 +100,20 @@
                   전체 보기
                 </button>
                 <button
-                  v-for="tag in allBlogTags"
+                  v-for="tag in displayedTags"
                   :key="tag"
                   class="tag-btn"
                   :class="{ active: selectedTag === tag }"
                   @click="selectTag(tag)"
                 >
                   #{{ tag }}
+                </button>
+                <button
+                  v-if="allBlogTags.length > TAGS_LIMIT"
+                  class="tag-toggle-btn"
+                  @click="isTagsExpanded = !isTagsExpanded"
+                >
+                  {{ isTagsExpanded ? '접기 ▲' : '더보기 ▼' }}
                 </button>
               </div>
             </div>
@@ -167,12 +174,29 @@
                   <td class="cell-tags">
                     <div class="post-tags">
                       <span
-                        v-for="tag in post.tags"
+                        v-for="tag in post.tags.slice(0, 4)"
                         :key="tag"
                         class="table-tag"
                         @click.stop="selectTag(tag)"
                       >
                         #{{ tag }}
+                      </span>
+                      <span
+                        v-if="post.tags && post.tags.length > 4"
+                        class="more-tags-badge"
+                        @click.stop
+                      >
+                        +{{ post.tags.length - 4 }}
+                        <span class="tags-tooltip">
+                          <span
+                            v-for="tag in post.tags.slice(4)"
+                            :key="tag"
+                            class="table-tag tooltip-tag"
+                            @click.stop="selectTag(tag)"
+                          >
+                            #{{ tag }}
+                          </span>
+                        </span>
                       </span>
                     </div>
                   </td>
@@ -310,6 +334,15 @@ const allBlogTags = computed<string[]>(() => {
     }
   });
   return Array.from(tagsSet).sort();
+});
+
+const isTagsExpanded = ref(false);
+const TAGS_LIMIT = 8;
+const displayedTags = computed<string[]>(() => {
+  if (isTagsExpanded.value) {
+    return allBlogTags.value;
+  }
+  return allBlogTags.value.slice(0, TAGS_LIMIT);
 });
 
 // 프로젝트 검색 및 태그 필터링 로직
@@ -717,6 +750,24 @@ onUnmounted(() => {
   }
 }
 
+.tag-toggle-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  color: #a0aec0;
+  padding: 0.3rem 0.65rem;
+  border-radius: 2rem;
+  font-size: 0.725rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(176, 126, 80, 0.08);
+    color: #e0a96d;
+    border-color: rgba(176, 126, 80, 0.35);
+  }
+}
+
 /* 우측 메인 콘텐트 */
 .main-content {
   display: flex;
@@ -976,6 +1027,90 @@ onUnmounted(() => {
           border-color: rgba(224, 169, 109, 0.3);
           color: #ffffff;
           box-shadow: 0 0 8px rgba(224, 169, 109, 0.3);
+        }
+      }
+
+      .more-tags-badge {
+        position: relative;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #e0a96d;
+        padding: 0.15rem 0.45rem;
+        border-radius: 0.3rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(176, 126, 80, 0.12);
+          border-color: rgba(176, 126, 80, 0.35);
+          color: #ffffff;
+
+          .tags-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+
+        .tags-tooltip {
+          position: absolute;
+          bottom: 130%;
+          left: 50%;
+          transform: translateX(-50%) translateY(6px);
+          background: rgba(18, 19, 21, 0.96);
+          border: 1px solid rgba(176, 126, 80, 0.35);
+          padding: 0.6rem;
+          border-radius: 0.5rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.35rem;
+          width: max-content;
+          max-width: 220px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 0 1px rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 100;
+          pointer-events: auto;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(18, 19, 21, 0.96) transparent transparent transparent;
+          }
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: transparent;
+          }
+
+          .tooltip-tag {
+            background: rgba(140, 98, 57, 0.15);
+            border: 1px solid rgba(140, 98, 57, 0.3);
+            color: #f7e1c8;
+            white-space: nowrap;
+
+            &:hover {
+              background: rgba(176, 126, 80, 0.3);
+              border-color: #e0a96d;
+              color: #ffffff;
+            }
+          }
         }
       }
     }
